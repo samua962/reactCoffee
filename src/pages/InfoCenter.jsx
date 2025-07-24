@@ -14,20 +14,38 @@ const InfoCenter = () => {
 
   const NEWS_API_KEY = '3859bb0d37bd442dbcf572c7bae0ef1a';
 
+  // const getNewQuote = async () => {
+  //   setIsLoading(prev => ({ ...prev, quote: true }));
+  //   try {
+  //     const res = await fetch("https://favqs.com/api/qotd");
+  //     const data = await res.json();
+  //     setCurrentQuote({ text: data.content, author: data.author });
+  //   } catch (error) {
+  //     setCurrentQuote({ text: "Failed to fetch quote.", author: "API Error" });
+  //   }
+  //   setIsLoading(prev => ({ ...prev, quote: false }));
+  // };
+
+
   const getNewQuote = async () => {
-    setIsLoading(prev => ({ ...prev, quote: true }));
-    try {
-      const res = await fetch("https://favqs.com/api/qotd");
-      const data = await res.json();
-      setCurrentQuote({
-        text: data.quote.body,
-        author: data.quote.author
-      });
-    } catch (error) {
-      setCurrentQuote({ text: "Failed to fetch quote.", author: "API Error" });
+  setIsLoading(prev => ({ ...prev, quote: true }));
+  try {
+    const res = await fetch("https://api.allorigins.win/raw?url=https://zenquotes.io/api/random");
+    const text = await res.text();
+    const data = JSON.parse(text);
+
+    if (Array.isArray(data) && data.length > 0) {
+      setCurrentQuote({ text: data[0].q, author: data[0].a });
+    } else {
+      throw new Error("Invalid quote response");
     }
+  } catch (error) {
+    console.error("Error fetching quote:", error);
+    setCurrentQuote({ text: "Failed to fetch quote.", author: "API Error" });
+  } finally {
     setIsLoading(prev => ({ ...prev, quote: false }));
-  };
+  }
+};
 
   const fetchNews = async () => {
     setIsLoading(prev => ({ ...prev, news: true }));
@@ -95,7 +113,9 @@ const InfoCenter = () => {
             className="bg-white rounded-2xl shadow-xl p-8"
           >
             <div className="flex items-center justify-between mb-6">
-              <h3 className="text-2xl font-bold text-gray-900">Quote of the day</h3>
+              <h3 className="text-2xl font-bold text-gray-900">
+                Quote of the day
+              </h3>
               <motion.button
                 onClick={getNewQuote}
                 disabled={isLoading.quote}
@@ -103,7 +123,11 @@ const InfoCenter = () => {
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
               >
-                <RefreshCw className={`h-5 w-5 text-amber-800 ${isLoading.quote ? "animate-spin" : ""}`} />
+                <RefreshCw
+                  className={`h-5 w-5 text-amber-800 ${
+                    isLoading.quote ? "animate-spin" : ""
+                  }`}
+                />
               </motion.button>
             </div>
 
@@ -217,3 +241,7 @@ const InfoCenter = () => {
 };
 
 export default InfoCenter;
+
+
+
+
