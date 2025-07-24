@@ -17,9 +17,12 @@ const InfoCenter = () => {
   const getNewQuote = async () => {
     setIsLoading(prev => ({ ...prev, quote: true }));
     try {
-      const res = await fetch("http://api.quotable.io/random");
+      const res = await fetch("https://favqs.com/api/qotd");
       const data = await res.json();
-      setCurrentQuote({ text: data.content, author: data.author });
+      setCurrentQuote({
+        text: data.quote.body,
+        author: data.quote.author
+      });
     } catch (error) {
       setCurrentQuote({ text: "Failed to fetch quote.", author: "API Error" });
     }
@@ -30,7 +33,7 @@ const InfoCenter = () => {
     setIsLoading(prev => ({ ...prev, news: true }));
     setNewsError(null);
     try {
-      const response = await fetch(`http://newsapi.org/v2/everything?q=ethiopian&pageSize=5&apiKey=${NEWS_API_KEY}`);
+      const response = await fetch(`https://newsapi.org/v2/everything?q=ethiopian&pageSize=5&apiKey=${NEWS_API_KEY}`);
       const data = await response.json();
       if (data.status === "ok") {
         setNews(data.articles);
@@ -92,9 +95,7 @@ const InfoCenter = () => {
             className="bg-white rounded-2xl shadow-xl p-8"
           >
             <div className="flex items-center justify-between mb-6">
-              <h3 className="text-2xl font-bold text-gray-900">
-                Quote of the day
-              </h3>
+              <h3 className="text-2xl font-bold text-gray-900">Quote of the day</h3>
               <motion.button
                 onClick={getNewQuote}
                 disabled={isLoading.quote}
@@ -102,11 +103,7 @@ const InfoCenter = () => {
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
               >
-                <RefreshCw
-                  className={`h-5 w-5 text-amber-800 ${
-                    isLoading.quote ? "animate-spin" : ""
-                  }`}
-                />
+                <RefreshCw className={`h-5 w-5 text-amber-800 ${isLoading.quote ? "animate-spin" : ""}`} />
               </motion.button>
             </div>
 
