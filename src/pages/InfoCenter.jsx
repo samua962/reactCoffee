@@ -17,7 +17,7 @@ const InfoCenter = () => {
   const getNewQuote = async () => {
     setIsLoading(prev => ({ ...prev, quote: true }));
     try {
-      const res = await fetch("http://api.quotable.io/random");
+      const res = await fetch("https://api.quotable.io/random");
       const data = await res.json();
       setCurrentQuote({ text: data.content, author: data.author });
     } catch (error) {
@@ -30,7 +30,7 @@ const InfoCenter = () => {
     setIsLoading(prev => ({ ...prev, news: true }));
     setNewsError(null);
     try {
-      const response = await fetch(`http://newsapi.org/v2/everything?q=ethiopian&pageSize=5&apiKey=${NEWS_API_KEY}`);
+      const response = await fetch(`https://newsapi.org/v2/everything?q=ethiopian&pageSize=5&apiKey=${NEWS_API_KEY}`);
       const data = await response.json();
       if (data.status === "ok") {
         setNews(data.articles);
